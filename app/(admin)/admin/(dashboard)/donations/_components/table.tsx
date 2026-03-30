@@ -1,0 +1,374 @@
+"use client";
+
+import * as React from "react";
+import {
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+  type ColumnDef,
+  type ColumnFiltersState,
+  type SortingState,
+} from "@tanstack/react-table";
+
+import {
+  ArrowUpDown,
+  Heart,
+  Eye,
+  Trash2,
+} from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+import { DonationDTO } from "@/types/donation";
+import api from "@/lib/axios";
+import { toast } from "sonner";
+
+// ─────────────────────────────────────────────
+// Columns
+// ─────────────────────────────────────────────
+
+const donorColumns = (
+  onView: (donor: DonationDTO) => void,
+  onDelete: (donor: DonationDTO) => void
+): ColumnDef<DonationDTO>[] => [
+    {
+      accessorKey: "user.Name",
+      id: "userName",
+      header: ({ column }) => (
+        <button
+          className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wide"
+          style={{ color: "var(--color-primary)" }}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Donor <ArrowUpDown size={12} />
+        </button>
+      ),
+      cell: ({ row }) => (
+        <div className="flex items-center gap-3">
+          <div
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold"
+            style={{
+              background:
+                "color-mix(in oklch, var(--color-accent) 25%, white)",
+              color: "var(--color-primary)",
+            }}
+          >
+            {row.original.user?.Name?.charAt(0)?.toUpperCase() ?? "?"}
+          </div>
+
+          <div>
+            <p
+              className="text-sm font-medium"
+              style={{ color: "var(--color-primary)" }}
+            >
+              {row.original.user?.Name ?? "Anonymous"}
+            </p>
+            <p className="text-xs text-gray-400">
+              {row.original.user?.email ?? ""}
+            </p>
+          </div>
+        </div>
+      ),
+    },
+
+    {
+      id: "phone",
+      header: () => (
+        <span
+          className="text-xs font-semibold uppercase tracking-wide"
+          style={{ color: "var(--color-primary)" }}
+        >
+          Phone
+        </span>
+      ),
+      cell: ({ row }) => (
+        <span className="text-sm text-gray-500 font-mono">
+          {row.original.user?.phone ?? "—"}
+        </span>
+      ),
+    },
+
+    {
+      accessorKey: "amount",
+      header: ({ column }) => (
+        <button
+          className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wide"
+          style={{ color: "var(--color-primary)" }}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Amount <ArrowUpDown size={12} />
+        </button>
+      ),
+      cell: ({ row }) => (
+        <span
+          className="text-sm font-bold"
+          style={{ color: "var(--color-primary)" }}
+        >
+          ₹{row.original.amount.toLocaleString("en-IN")}
+        </span>
+      ),
+    },
+
+    {
+      accessorKey: "paymentStatus",
+      header: () => (
+        <span
+          className="text-xs font-semibold uppercase tracking-wide"
+          style={{ color: "var(--color-primary)" }}
+        >
+          Status
+        </span>
+      ),
+      cell: ({ row }) => {
+        const status = row.original.paymentStatus;
+
+        const styles = {
+          success: "bg-green-50 text-green-600",
+          pending: "bg-yellow-50 text-yellow-600",
+          failed: "bg-red-50 text-red-600",
+        };
+
+        return (
+          <span
+            className={`px-2 py-1 rounded text-xs font-medium ${styles[status]}`}
+          >
+            {status}
+          </span>
+        );
+      },
+    },
+
+    {
+      accessorKey: "cashfreeOrderId",
+      header: () => (
+        <span
+          className="text-xs font-semibold uppercase tracking-wide"
+          style={{ color: "var(--color-primary)" }}
+        >
+          Payment ID
+        </span>
+      ),
+      cell: ({ row }) => (
+        <span className="text-xs font-mono bg-gray-50 px-2 py-1 rounded-lg text-gray-500">
+          {row.original.cashfreeOrderId ?? "—"}
+        </span>
+      ),
+    },
+
+    {
+      id: "date",
+      header: () => (
+        <span
+          className="text-xs font-semibold uppercase tracking-wide"
+          style={{ color: "var(--color-primary)" }}
+        >
+          Date
+        </span>
+      ),
+      cell: ({ row }) => {
+        const date = row.original.paidAt ?? row.original.createdAt;
+
+        return (
+          <span className="text-sm text-gray-500">
+            {new Date(date).toLocaleDateString("en-IN", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })}
+          </span>
+        );
+      },
+    },
+
+    // ACTIONS BACK
+    {
+      id: "actions",
+      header: () => (
+        <span
+          className="text-xs font-semibold uppercase tracking-wide"
+          style={{ color: "var(--color-primary)" }}
+        >
+          Actions
+        </span>
+      ),
+      cell: ({ row }) => (
+        <div className="flex gap-2">
+          <button
+            onClick={() => onView(row.original)}
+            className="p-2 rounded-lg border hover:scale-105 cursor-pointer transition"
+            style={{
+              borderColor:
+                "color-mix(in oklch, var(--color-primary) 20%, white)",
+              color: "var(--color-primary)",
+            }}
+          >
+            <Eye size={14} />
+          </button>
+
+          <button
+            onClick={() => onDelete(row.original)}
+            className="p-2 rounded-lg border hover:scale-105 cursor-pointer transition"
+            style={{
+              borderColor:
+                "color-mix(in oklch, var(--color-danger) 30%, white)",
+              color: "var(--color-danger)",
+            }}
+          >
+            <Trash2 size={14} />
+          </button>
+        </div>
+      ),
+    },
+  ];
+
+// ─────────────────────────────────────────────
+// Component
+// ─────────────────────────────────────────────
+
+export const DonorTable = ({ data }: { data: DonationDTO[] }) => {
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] =
+    React.useState<ColumnFiltersState>([]);
+  const [tableData, setTableData] = React.useState<DonationDTO[]>(data);
+
+  const handleView = (donor: DonationDTO) => {
+    console.log("VIEW", donor);
+    //  yaha modal / details open kar sakta hai
+  };
+
+  const handleDelete = async (donor: DonationDTO) => {
+    try {
+      await api.delete(`/donations/${donor._id}`);
+
+      // UI instantly update
+      setTableData((prev) =>
+        prev.filter((d) => d._id !== donor._id)
+      );
+
+      toast.success("Donation deleted successfully");
+
+    } catch (error: any) {
+      console.error(error);
+      toast.error(
+        error?.response?.data?.message || "Delete failed"
+      );
+    }
+  };
+
+  const table = useReactTable({
+    data: tableData,
+    columns: donorColumns(handleView, handleDelete),
+    state: { sorting, columnFilters },
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+  });
+
+  return (
+    <div className="space-y-4">
+
+      {/*  Search */}
+      <Input
+        placeholder="Search donor..."
+        value={(table.getColumn("userName")?.getFilterValue() as string) ?? ""}
+        onChange={(e) =>
+          table.getColumn("userName")?.setFilterValue(e.target.value)
+        }
+        className="max-w-sm"
+      />
+
+      {/* Table */}
+      <div className="rounded-xl overflow-hidden border border-gray-200/60 backdrop-blur-sm">
+        <Table className="border-separate border-spacing-0 ">
+          <TableHeader>
+            {table.getHeaderGroups().map((hg) => (
+              <TableRow
+                key={hg.id}
+                style={{
+                  background:
+                    "color-mix(in oklch, var(--color-primary) 4%, white)",
+                }}
+              >
+                {hg.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+
+          <TableBody>
+            {table.getRowModel().rows.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  className="hover:bg-gray-50/80 transition"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={7} className="text-center py-16">
+                  <div className="flex flex-col items-center gap-2">
+                    <Heart />
+                    <p>No donations found</p>
+                  </div>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* Pagination */}
+      <div className="flex justify-between">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          Previous
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          Next
+        </Button>
+      </div>
+
+    </div>
+  );
+};
