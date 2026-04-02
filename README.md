@@ -1,188 +1,178 @@
-# Diwan Foundation Website
+# 🌿 Diwan Foundation
 
-Official website for **Diwan Foundation**, designed to support community initiatives, donations, and social impact programs.
-
-This platform provides an engaging and modern interface to showcase the foundation’s mission, initiatives, and donation opportunities.
+> An official full-stack web platform for **Diwan Foundation** — a community-driven NGO supporting social initiatives, donations, memberships, and impact programs.
 
 ---
 
-# Project Overview
+## ✨ Features at a Glance
 
-The Diwan Foundation website is built using modern web technologies to ensure:
-
-* High performance
-* Responsive design
-* Clean and accessible UI
-* Scalable architecture
-* Secure form validation
-
-The goal of this project is to create a **modern NGO platform** that allows users to learn about the foundation, explore initiatives, and contribute through donations.
-
----
-
-# Tech Stack
-
-### Frontend Framework
-
-* **Next.js 14+ (App Router)**
-
-### Programming Language
-
-* **TypeScript**
-
-### Styling
-
-* **Tailwind CSS**
-
-### UI Components
-
-* **shadcn/ui**
-
-### Form Validation
-
-* **Zod**
-* **React Hook Form**
-
-### Icons
-
-* **Lucide React**
-
-### Image Optimization
-
-* **Next.js Image Component**
-
-### Animations
-
-* **Framer Motion**
-
-### Database (Planned / Used)
-
-* **MongoDB**
-* **Mongoose**
-
-### Authentication (Planned / Used)
-
-* **NextAuth.js**
+| Area | What it does |
+|---|---|
+| 🌐 **Public Website** | Home, About, Blog, Services, Gallery, Contact |
+| 💸 **Donations** | Cashfree payment gateway integration with webhook verification |
+| 👤 **Member Portal** | Profile, ID Card, Achievement & Member Certificates |
+| 🎁 **Donor Portal** | Donor dashboard, Donor ID card |
+| 🛠️ **Admin Panel** | Full CRUD — Members, Users, Blogs, Gallery, Testimonials, Banners, Videos, Services, Donations, Certificates |
+| 📄 **PDF Generation** | Member ID cards & certificates generated via `pdf-lib` |
+| 📧 **Email Notifications** | Automated emails via Nodemailer |
 
 ---
 
-# Features
+## 🛠️ Tech Stack
 
-* Responsive modern NGO website
-* Hero banner with slider
-* About section with community impact information
-* Donation page
-* Member login system
-* Donor login system
-* Admin login panel
-* Form validation using Zod
-* Animated UI sections
-* Optimized images using Next.js
-* Mobile-friendly layout
-* Clean reusable component architecture
-
----
-
-# UI / Design System
-
-This project uses a **modern component-based UI architecture**:
-
-* shadcn/ui components
-* Tailwind utility classes
-* Global CSS variables for theme colors
-* Reusable UI elements
-
-Example UI components used:
-
-* Card
-* Button
-* Input
-* Badge
-* Tabs
-* Toast
+| Layer | Technology |
+|---|---|
+| **Framework** | Next.js 16+ (App Router) |
+| **Language** | TypeScript |
+| **Database** | MongoDB + Mongoose |
+| **Auth** | JWT (jose) — custom session handling |
+| **Payments** | Cashfree Payments |
+| **UI** | Tailwind CSS v4 + shadcn/ui + Radix UI |
+| **Forms** | React Hook Form + Zod |
+| **Rich Text** | Tiptap |
+| **Animations** | Framer Motion |
+| **PDF** | pdf-lib |
+| **Email** | Nodemailer |
+| **Charts** | Recharts |
+| **Tables** | TanStack Table |
 
 ---
 
-# Folder Structure
+## 🚀 Getting Started
 
-```
-app
- ├ pages
- ├ api
- ├ components
- ├ contexts
- ├ hooks
- ├ lib
- ├ models
- ├ styles
- └ data
-```
+### Prerequisites
 
----
+- Node.js 18+
+- npm or yarn
+- A MongoDB instance (local or MongoDB Atlas)
+- A Cashfree merchant account
 
-# Installation
+### 1. Clone the repository
 
-Clone the repository:
-
-```
+```bash
 git clone https://github.com/your-username/diwan-foundation.git
+cd diwan-foundation
 ```
 
-Install dependencies:
+### 2. Install dependencies
 
-```
+```bash
 npm install
 ```
 
-Run development server:
+### 3. Configure environment variables
 
+Create a `.env.local` file in the root and fill in the required values:
+
+```env
+# Database
+MONGODB_URI=your_mongodb_connection_string
+
+# Auth
+JWT_SECRET=your_jwt_secret_key
+
+# Cashfree Payments
+CASHFREE_APP_ID=your_cashfree_app_id
+CASHFREE_SECRET_KEY=your_cashfree_secret_key
+CASHFREE_ENV=sandbox   # or "production"
+
+# Email
+SMTP_HOST=your_smtp_host
+SMTP_PORT=587
+SMTP_USER=your_email@example.com
+SMTP_PASS=your_email_password
+
+# App URL
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
+
+### 4. Run the development server
+
+```bash
 npm run dev
 ```
 
-Open in browser:
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+---
+
+## 📁 Project Structure
 
 ```
-http://localhost:3000
+.
+├── app/
+│   ├── (pages)/           # Public-facing pages
+│   │   ├── about/
+│   │   ├── blog/
+│   │   ├── contact/
+│   │   ├── donate/
+│   │   ├── gallery/
+│   │   ├── members/
+│   │   ├── services/
+│   │   ├── privacy-policy/
+│   │   └── terms/
+│   ├── (admin)/           # Admin panel (protected)
+│   │   └── admin/
+│   ├── member/            # Member portal (protected)
+│   ├── donor/             # Donor portal (protected)
+│   ├── login/             # Shared login page
+│   └── api/v1/            # REST API routes
+├── components/
+│   ├── sections/          # Page-level section components
+│   ├── ui/                # shadcn/ui components
+│   └── animations/
+├── models/                # Mongoose schemas
+├── schemas/               # Zod validation schemas
+├── lib/                   # DB connection, mailer, axios
+├── utils/                 # JWT, sessions, image upload, helpers
+├── hooks/                 # Custom React hooks
+└── types/                 # TypeScript type definitions
 ```
 
 ---
 
-# Environment Variables
+## 🔐 Authentication & Roles
 
-Create a `.env.local` file and configure required variables.
+The platform supports three user roles, each with its own protected portal:
 
-Example:
+- **Admin** — full access to the admin dashboard
+- **Member** — access to member portal (ID card, certificates, profile)
+- **Donor** — access to donor dashboard and donor ID
 
+Authentication is handled with JWT tokens stored in HTTP-only cookies.
+
+---
+
+## 💳 Payments
+
+Donations are processed using **Cashfree Payments**. The flow is:
+
+1. User fills the donation form → order is initiated via `/api/v1/donations/initiate`
+2. Cashfree checkout opens in the browser
+3. On success, Cashfree calls the webhook at `/api/v1/donations/webhook`
+4. Order is verified at `/api/v1/donations/verify`
+
+---
+
+## 📜 Scripts
+
+```bash
+npm run dev      # Start development server
+npm run build    # Build for production
+npm run start    # Start production server
+npm run lint     # Run ESLint
 ```
-MONGODB_URI=your_database_url
-NEXTAUTH_SECRET=your_secret_key
-NEXTAUTH_URL=http://localhost:3000
-```
 
 ---
 
-# Performance Optimizations
+## 📄 License
 
-* Next.js Image optimization
-* Server Components
-* Code splitting
-* Lazy loading sections
-* Optimized Tailwind build
+© 2026 Diwan Foundation. All rights reserved.
+This project is proprietary and may not be copied, modified, or redistributed without explicit permission.
 
 ---
 
-# License
-
-© 2026 Diwan Foundation
-All rights reserved.
-
-This project is proprietary and may not be copied, modified, or redistributed without permission.
-
----
-
-# Author
+## 👨‍💻 Author
 
 Developed by **Aditya Gangil**
-
-Built with modern web technologies to support the mission of **Diwan Foundation**.
+Built to support the mission of **Diwan Foundation**.

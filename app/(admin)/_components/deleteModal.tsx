@@ -42,14 +42,14 @@ export default function DeleteConfirmDialog({
         </AlertDialogHeader>
 
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={loading}>
+          <AlertDialogCancel disabled={loading} className="cursor-pointer">
             Cancel
           </AlertDialogCancel>
 
           <AlertDialogAction
             onClick={onConfirm}
             disabled={loading}
-            className="bg-red-600 hover:bg-red-700 text-white"
+            className="bg-red-600 hover:bg-red-700 text-white cursor-pointer"
           >
             {loading ? (
               <span className="flex items-center gap-2">
