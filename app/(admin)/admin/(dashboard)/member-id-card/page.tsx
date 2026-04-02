@@ -183,7 +183,7 @@ const IdCardPage = () => {
           </div>
           <Button
             onClick={() => router.push("/admin/member-id-card/generate")}
-            className="inline-flex items-center gap-2 text-sm font-semibold px-5 py-2.5 rounded-xl shadow-md transition-all duration-200 hover:scale-105 hover:shadow-lg w-fit"
+            className="inline-flex items-center gap-2  cursor-pointer text-sm font-semibold px-5 py-2.5 rounded-xl shadow-md transition-all duration-200 hover:scale-105 hover:shadow-lg w-fit"
             style={{ background: "var(--color-accent)", color: "var(--color-primary)" }}
           >
             <Plus size={16} strokeWidth={2.5} />

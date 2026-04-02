@@ -1,10 +1,13 @@
 "use client"
 
+import api from "@/lib/axios"
 import { ContactFormData, contactSchema } from "@/schemas/contact"
 import { motion } from "framer-motion"
 import React, { useState } from "react"
+import { toast } from "sonner"
 
 export default function ContactForm() {
+  const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState<ContactFormData>({
     name: "",
     email: "",
@@ -25,7 +28,7 @@ export default function ContactForm() {
 
   // handle Submit
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const result = contactSchema.safeParse(formData)
@@ -46,17 +49,26 @@ export default function ContactForm() {
     }
 
     setErrors({})
+    setLoading(true);
+    try {
+      const res = await api.post("/contact", formData)
 
-    /* ---------------------------------
-    TODO: Add API call in future
-    Example:
-    await fetch("/api/contact", {
-      method: "POST",
-      body: JSON.stringify(formData)
-    })
- -----------------------------------*/
+      //  reset form
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        message: ""
+      })
 
-    console.log("Form Submitted", formData)
+      toast.success("Message sent successfully")
+
+    } catch (error: any) {
+      console.error(error.response?.data || error.message)
+      toast.error(error.response?.data || "Failed message to send")
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -141,7 +153,7 @@ export default function ContactForm() {
           <p className="text-red-500 text-sm">{errors.message}</p>
         )}
 
-        <button className="button px-6 py-3 rounded-md">
+        <button className="button px-6 py-3 rounded-md cursor-pointer">
           Send Message
         </button>
 

@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Trash2, PlayCircle, Link2, Film } from "lucide-react";
 import DeleteConfirmDialog from "@/app/(admin)/_components/deleteModal";
+import Header from "@/app/(admin)/_components/header";
 
 interface VideoItem {
   _id: string;
@@ -56,6 +57,7 @@ function VideoCard({
   };
 
   return (
+
     <div className="group relative bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5">
       {/* Thumbnail */}
       <div className="relative aspect-video bg-gray-100 overflow-hidden">
@@ -177,7 +179,12 @@ export default function VideosPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-screen-xl mx-auto px-6 py-8 space-y-8">
+      <Header
+        backlink="/admin/dashboard"
+        pageName="Dashboard"
+        currentPage="Contact"
+      />
+      <div className="max-w-screen-xl mx-auto px-6 py-6 space-y-8">
 
         {/* ── Header ── */}
         <div className="flex flex-col sm:flex-row sm:items-end gap-4">

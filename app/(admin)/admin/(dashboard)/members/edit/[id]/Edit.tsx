@@ -42,13 +42,14 @@ export default function EditMemberP({ initialData }: { initialData: EditMember }
         ...initialData,
         dob: initialData.dob?.split("T")[0] ?? "",
         membershipStartDate: initialData.membershipStartDate?.split("T")[0] ?? "",
-        membershipPlan: initialData.membershipPlan?.membershipType??"",
-        image: undefined, // always clear — image is handled via existingImage prop
+        membershipPlan: initialData.membershipPlan?._id ?? "",
+        imageUrl: initialData.imageUrl ?? undefined, // always clear — image is handled via existingImage prop
       });
     }
   }, [initialData, form]);
 
-  async function onSubmit(data: MemberFormValues) {
+  async function onSubmit(data: MemberFormValues, removeImage: boolean) {
+    console.log("form data", data);
     setIsSubmitting(true);
     try {
       const formData = new FormData();
@@ -59,13 +60,13 @@ export default function EditMemberP({ initialData }: { initialData: EditMember }
         }
       });
 
-      if (data.image instanceof File) {
-        formData.append("image", data.image); // new file uploaded
+      if (removeImage) {
+        formData.append("removeImage", "true");
       }
       // if no new file, backend keeps the existing image as-is
 
-      await api.put(`/admin/member/${initialData._id}`, formData);
-      toast.success("Member updated successfully");
+      const res = await api.put(`/admin/member/${initialData._id}`, formData);
+      toast.success(res.data?.message || "Member updated successfully");
       router.back();
     } catch (err: any) {
       toast.error(err?.response?.data?.message || "Failed to update member");

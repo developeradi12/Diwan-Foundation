@@ -61,28 +61,28 @@ export default function DonateForm() {
       return
     }
 
-    const toastId = toast.loading("Initiating payment...")  // ✅ save toast id
+    const toastId = toast.loading("Initiating payment...")  //  save toast id
 
     try {
       setLoading(true)
 
       const { data } = await api.post("/donations/initiate", form)
-
+         
       if (!data?.payment_session_id) {
-        toast.error("Payment session failed", { id: toastId })  // ✅ replaces loading toast
+        toast.error("Payment session failed", { id: toastId })  //  replaces loading toast
         return
       }
 
       toast.loading("Redirecting to secure payment...", { id: toastId })
-      await openCashfree(data.payment_session_id)  // ✅ pass only what's needed
+      await openCashfree(data.payment_session_id)  //  pass only what's needed
 
       // If we reach here, redirect didn't happen — dismiss toast
       toast.dismiss(toastId)
 
     } catch (err: any) {
       console.error(err)
-      toast.error(err?.message || "Something went wrong", { id: toastId })  // ✅ always dismisses loading
-      setLoading(false)  // ✅ only reset on actual error, not on successful redirect
+      toast.error(err?.message || "Something went wrong", { id: toastId })  //  always dismisses loading
+      setLoading(false)  //  only reset on actual error, not on successful redirect
     }
   }
 
@@ -130,7 +130,7 @@ export default function DonateForm() {
               <Button
                 type="submit"
                 disabled={loading || !form.amount}
-                className="bg-[var(--color-accent)] px-8 py-6 text-base"
+                className="bg-[var(--color-accent)] px-8 py-6 hover:text-white cursor-pointer text-base"
               >
                 {loading ? "Please wait…" : "Donate Now →"}
               </Button>

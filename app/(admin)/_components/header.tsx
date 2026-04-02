@@ -31,15 +31,15 @@ interface BreadcrumbProps {
 const Header = ({ backlink, pageName, currentPage }: BreadcrumbProps) => {
 
   const handleLogout = async () => {
-  try {
-    await api.post("/auth/logout")
+    try {
+      await api.post("/admin/logout")
 
-    // redirect after logout
-    window.location.href = "/login"
-  } catch (error) {
-    console.log("Logout error", error)
+      // redirect after logout
+      window.location.href = "/login"
+    } catch (error) {
+      console.log("Logout error", error)
+    }
   }
-}
 
   return (
     <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 justify-between px-4 border-b`">
@@ -70,13 +70,13 @@ const Header = ({ backlink, pageName, currentPage }: BreadcrumbProps) => {
       </div>
 
       <div className="flex gap-3 items-center">
-        <Link href="/donate">
-          <Button className="bg-(--color-primary) text-(--color-text-inverse) hover:opacity-90 cursor-pointer">
+        <Link href="/admin/donations">
+          <Button className="bg-(--color-primary) cursor-pointe text-(--color-text-inverse) hover:opacity-90 cursor-pointer">
             <Spotlight /> Donations
           </Button>
         </Link>
-        <Link href="#">
-          <Button className="bg-(--color-success) text-white hover:opacity-90 cursor-pointer">
+        <Link href="/blogs">
+          <Button className="bg-(--color-success) cursor-pointer text-white hover:opacity-90 cursor-pointer">
             <SquarePenIcon /> Blogs
           </Button>
         </Link>
@@ -84,18 +84,25 @@ const Header = ({ backlink, pageName, currentPage }: BreadcrumbProps) => {
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              className="rounded-full w-10 h-10 border-(--color-border)"
+              className="rounded-full w-10 h-10 cursor-pointer border-(--color-border)"
             >
               <User />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="mr-3 bg-white w-[200px] text-md border-none">
-            <DropdownMenuLabel className="text-md font-medium">
-              My Account
+          <DropdownMenuContent className="mr-3 bg-white w-[200px] text-md border-0">
+            <DropdownMenuLabel className="text-md font-medium border-0">
+              <Link href="/admin/my-account" className="w-full block">
+                My Account
+              </Link>
             </DropdownMenuLabel>
+
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-md">
-              <button onClick={handleLogout}>Logout</button>
+
+            <DropdownMenuItem
+              className="text-md cursor-pointer"
+              onClick={handleLogout}
+            >
+              Logout
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

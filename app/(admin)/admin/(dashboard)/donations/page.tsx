@@ -28,7 +28,7 @@ async function getDonors(): Promise<DonationDTO[]> {
     user: d.user
       ? {
         _id: d.user._id.toString(),
-        Name: d.user.fullName,        
+        Name: d.user.fullName,
         email: d.user.email,
         phone: d.user.phone,
       }
@@ -36,10 +36,7 @@ async function getDonors(): Promise<DonationDTO[]> {
 
     amount: d.amount,
     paymentStatus: d.paymentStatus as PaymentStatus,
-
-    // razorpayPaymentId: d.razorpayPaymentId ?? null,
-    // razorpayOrderId: d.razorpayOrderId ?? null,
-    cashfreeOrderId: d.cashfreeOrderId??null,
+    cashfreeOrderId: d.cashfreeOrderId ?? null,
     paidAt: d.paidAt ?? null,
     createdAt: d.createdAt,
   }));
@@ -49,12 +46,14 @@ async function getDonors(): Promise<DonationDTO[]> {
 
 function computeStats(donors: DonationDTO[]): DonationStats {
   const successful = donors.filter((d) => d.paymentStatus === "success");
+  const pending = donors.filter((d) => d.paymentStatus === "pending");
 
   return {
     totalRaised: successful.reduce((sum, d) => sum + (d.amount ?? 0), 0),
     successCount: successful.length,
     pendingCount: donors.filter((d) => d.paymentStatus === "pending").length,
     failedCount: donors.filter((d) => d.paymentStatus === "failed").length,
+    pendingAmount: pending.reduce((sum, d) => sum + (d.amount ?? 0), 0),
   };
 }
 
@@ -62,7 +61,7 @@ function computeStats(donors: DonationDTO[]): DonationStats {
 
 export default async function DonorsPage() {
   const donors = await getDonors();
-  const { totalRaised, successCount, pendingCount, failedCount } =
+  const { totalRaised, successCount, pendingCount, failedCount, pendingAmount } =
     computeStats(donors);
 
   return (
@@ -91,8 +90,8 @@ export default async function DonorsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
           <StatCard
             icon={<Heart size={20} />}
-            label="Total Donations"
-            value={donors.length}
+            label="Pending Amount"
+            value={`₹${pendingAmount.toLocaleString("en-IN")}`}
           />
           <StatCard
             icon={<TrendingUp size={20} />}

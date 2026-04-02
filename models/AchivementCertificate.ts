@@ -12,9 +12,9 @@ export interface IAchivementCertificate extends Document {
 
 const AchivementCertificateSchema = new Schema<IAchivementCertificate>(
   {
-    userId: { type: String, required: true },
+    userId: { type: String, required: true, unique:true },
     userName: { type: String, required: true },
-    certificateNo: { type: String, required: true },
+    certificateNo: { type: String, required: true,unique:true},
     issueDate: { type: Date, default: Date.now },
     fileUrl: { type: String, required: true },
   },

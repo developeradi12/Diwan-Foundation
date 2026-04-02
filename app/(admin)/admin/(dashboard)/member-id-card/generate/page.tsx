@@ -43,7 +43,7 @@ const GenerateIdCard = () => {
   useEffect(() => {
     const fetchMembers = async () => {
       try {
-        const res = await api.get("/users");
+        const res = await api.get("/admin/use");
         setMembers(res.data.users);
       } catch (error) {
         console.error(error);
@@ -78,8 +78,8 @@ const GenerateIdCard = () => {
     }
     setIsLoading(true);
     try {
-      await api.post("/id-card/generate", { memberId });
-      toast.success("ID card generated successfully");
+      const res = await api.post("/id-card/generate", { memberId });
+      toast.success(res.data.message||"ID card generated successfully");
       router.push("/admin/member-id-card");
     } catch (error: any) {
       const message = error.response?.data?.message || "Something went wrong";

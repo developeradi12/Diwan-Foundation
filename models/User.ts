@@ -33,7 +33,6 @@ export interface IUser extends Document {
 
   createdAt?: Date;
   updatedAt?: Date;
-  refreshToken: string;
 }
 const UserSchema = new Schema<IUser>(
   {

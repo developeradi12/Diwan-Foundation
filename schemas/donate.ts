@@ -3,20 +3,20 @@ import { z } from "zod"
 export const donationSchema = z.object({
   fullName: z
     .string()
-    .min(2, "Name at least 2 characters hona chahiye"),
+    .min(2, "Name  should be at least 4 characters"),
 
   email: z
     .string()
-    .email("Valid email daalo"),
+    .email("Enter a Valid email address "),
 
   phone: z
     .string()
-    .regex(/^[6-9]\d{9}$/, "Valid 10 digit Indian phone number daalo"),
+    .regex(/^[6-9]\d{9}$/, "Enter 10 digit Valid phone number"),
 
   amount: z
     .string()
-    .min(1, "Amount select karo")
-    .refine((val) => Number(val) >= 1, "Amount ₹1 se kam nahi ho sakta"),
+    .min(1, "Amount is required")
+    .refine((val) => Number(val) >= 1, "Amount should not be less than 1 rupyee"),
 })
 
 export type DonationFormValues = z.infer<typeof donationSchema>

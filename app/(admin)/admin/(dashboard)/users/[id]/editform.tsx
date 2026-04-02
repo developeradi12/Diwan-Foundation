@@ -227,7 +227,7 @@ const EditUserForm = ({ initialData }: Props) => {
                             Reset
                         </Button>
 
-                        <Button type="submit" disabled={loading}>
+                        <Button className="button cursor-pointer hover:text-white" type="submit" disabled={loading}>
                             {loading ? "Updating..." : "Update User"}
                         </Button>
                     </div>

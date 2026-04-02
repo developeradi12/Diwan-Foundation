@@ -19,7 +19,7 @@ interface Plan {
 
 type Props = {
   form: UseFormReturn<MemberFormValues>;
-  onSubmit: (data: MemberFormValues) => void;
+  onSubmit: (data: MemberFormValues, removeImage: boolean) => void;
   isSubmitting: boolean;
   plans: Plan[];
   mode: "create" | "edit";
@@ -27,14 +27,13 @@ type Props = {
 };
 
 export default function MemberForm({ form, onSubmit, isSubmitting, plans, mode, existingImage }: Props) {
-
+  const [removeImage, setRemoveImage] = useState(false);
   const [preview, setPreview] = useState<string | null>(existingImage ?? null);
-  console.log("existingimage",existingImage);
+  // console.log("existingimage", existingImage);
 
   useEffect(() => {
-    if (existingImage) {
-      setPreview(existingImage);
-    }
+    setPreview(existingImage ?? null);
+    setRemoveImage(false);
   }, [existingImage]);
 
   const inputClass = "h-10 border border-gray-200 focus:border-[var(--color-primary)] focus-visible:ring-1 focus-visible:ring-[var(--color-primary)] rounded-xl text-sm";
@@ -45,7 +44,15 @@ export default function MemberForm({ form, onSubmit, isSubmitting, plans, mode, 
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit, (errors) => console.log(errors))} className="space-y-6">
+      <form
+        onSubmit={form.handleSubmit((data) => {
+          // console.log("FORM DATA:", data);
+          // console.log("REMOVE IMAGE:", removeImage);
+
+          onSubmit(data, removeImage);
+        })}
+        className="space-y-6"
+      >
 
         <div>
           <p className="text-2xl font-bold text-[var(--color-primary)]">
@@ -90,7 +97,7 @@ export default function MemberForm({ form, onSubmit, isSubmitting, plans, mode, 
                       <SelectValue placeholder="Select gender" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent  className={selectContentClass}>
+                  <SelectContent className={selectContentClass}>
                     <SelectItem className={selectItemClass} value="Male">Male</SelectItem>
                     <SelectItem className={selectItemClass} value="Female">Female</SelectItem>
                     <SelectItem className={selectItemClass} value="Other">Other</SelectItem>
@@ -129,7 +136,8 @@ export default function MemberForm({ form, onSubmit, isSubmitting, plans, mode, 
                       <button
                         type="button"
                         onClick={() => {
-                          setPreview(null);        // clear preview
+                          setPreview(null);
+                          setRemoveImage(true);
                           field.onChange(undefined); // clear form file value
                         }}
                         className="absolute top-1 right-1 bg-black/70 text-white rounded-full p-1 hover:bg-black"

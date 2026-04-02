@@ -24,14 +24,16 @@ import api from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/sections/Navbar";
 import { Footer } from "@/components/sections/Footer";
-import { ArrowLeft, ArrowRight } from "lucide-react";
-
+import { ArrowLeft } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 const formSchema = z.object({
   email: z.string().min(1, "Email Id required!"),
-  password: z.string().min(8, "password must be 8 character long"),
+  password: z.string().min(4, "password must be 4 character long"),
 });
 
 const AdminLogin = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -41,29 +43,29 @@ const AdminLogin = () => {
   });
   const router = useRouter();
 
- async function onSubmit(data: z.infer<typeof formSchema>) {
-  try {
-    const res = await api.post("/admin/login", {
-      email: data.email,
-      password: data.password,
-    })
+  async function onSubmit(data: z.infer<typeof formSchema>) {
+    try {
+      const res = await api.post("/admin/login", {
+        email: data.email,
+        password: data.password,
+      })
 
-    toast.success(res.data.message || "Login successful", {
-      position: "top-center",
-    })
+      toast.success(res.data.message || "Login successful", {
+        position: "top-center",
+      })
 
-    const role = res.data.user.role   // ← existingUser → user
+      const role = res.data.user.role   // ← existingUser → user
 
-    if (role === "donor")  { router.replace("/donor/dashboard"); return }
-    if (role === "member") { router.replace("/member"); return }
-    if (role === "admin")  { router.replace("/admin/dashboard"); return }
+      if (role === "donor") { router.replace("/donor/dashboard"); return }
+      if (role === "member") { router.replace("/member"); return }
+      if (role === "admin") { router.replace("/admin/dashboard"); return }
 
-  } catch (error: any) {
-    toast.error(error?.response?.data?.message || "Login failed", {
-      position: "top-center",
-    })
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Login failed", {
+        position: "top-center",
+      })
+    }
   }
-}
   return (
     <div className="h-screen" >
       <Navbar />
@@ -105,14 +107,30 @@ const AdminLogin = () => {
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel htmlFor="password">Password</FieldLabel>
-                      <Input
-                        {...field}
-                        type="password"
-                        id="password"
-                        aria-invalid={fieldState.invalid}
-                        placeholder="Enter your password."
-                        autoComplete="On"
-                      />
+                      <div className="relative">
+                        <Input
+                          {...field}
+                          type={showPassword ? "text" : "password"}
+                          id="password"
+                          aria-invalid={fieldState.invalid}
+                          placeholder="Enter your password."
+                          autoComplete="on"
+                          className="pr-10"
+                        />
+
+                        {/* Eye Icon */}
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 cursor-pointer top-1/2 -translate-y-1/2 text-gray-500"
+                        > {showPassword ? (
+                          <Eye className="w-5 h-5" />
+                        ) : (
+                          <EyeOff className="w-5 h-5" />
+                        )}
+                        </button>
+                      </div>
+
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
                       )}
@@ -141,7 +159,7 @@ const AdminLogin = () => {
       </div>
 
       <Footer />
-    </div>
+    </div >
   );
 };
 

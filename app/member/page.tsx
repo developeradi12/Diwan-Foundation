@@ -1,12 +1,52 @@
-export default function Page() {
+import { getSession } from "@/utils/sesion";
+import MembershipCard from "./_components/Membershipcard";
+import connectToDatabase from "@/lib/mongodb";
+import User from "@/models/User";
+import Membership from "@/models/Membership";
+
+export default async function Page() {
+  const session = await getSession();
+
+  if (!session) {
+    return <div>Unauthorized</div>;
+  }
+
+  const userId = session?.userId;
+
+  await connectToDatabase();
+
+  const user = await User.findById(userId);
+
+  if (!user) {
+    return <div>User not found</div>;
+  }
+
+  const membership = JSON.parse(JSON.stringify(
+    await Membership.findById(user?.membershipPlan)
+  ))
+
+  //  START DATE
+  const startDate = user?.membershipStartDate;
+
+  //  END DATE LOGIC (fallback)
+  let endDate = user?.membershipEndDate;
+
+  if (!endDate && startDate && membership?.membershipDuration) {
+    const start = new Date(startDate);
+
+    const calculatedEnd = new Date(start);
+    calculatedEnd.setMonth(
+      calculatedEnd.getMonth() + membership.membershipDuration
+    );
+
+    endDate = calculatedEnd;
+  }
+
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4">
-      <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-        <div className="aspect-video rounded-xl bg-gray-50" />
-        <div className="aspect-video rounded-xl bg-gray-50" />
-        <div className="aspect-video rounded-xl bg-gray-50" />
-      </div>
-      <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
-    </div>
+    <MembershipCard
+      membership={membership}
+      startDate={startDate}
+      endDate={endDate}
+    />
   );
 }

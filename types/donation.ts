@@ -24,4 +24,5 @@ export interface DonationStats {
   successCount: number;
   pendingCount: number;
   failedCount: number;
+  pendingAmount: number;
 }

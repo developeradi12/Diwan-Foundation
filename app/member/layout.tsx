@@ -1,103 +1,116 @@
 "use client"
-import { AppSidebar } from "./_components/app-sidebar";
-import { Separator } from "@/components/ui/separator";
+
+import { AppSidebar } from "./_components/app-sidebar"
+import { Separator } from "@/components/ui/separator"
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+} from "@/components/ui/sidebar"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu"
+
 import {
-  CreditCardIcon,
   LogOutIcon,
-  SettingsIcon,
   UserIcon,
-} from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import api from "@/lib/axios";
+} from "lucide-react"
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import api from "@/lib/axios"
 
-const MemberDashboardLayout = ({ children }: { children: React.ReactNode }) => {
+const MemberDashboardLayout = ({
+  children,
+}: {
+  children: React.ReactNode
+}) => {
+  const router = useRouter()
 
-   const handleLogout = async () => {
-  try {
-    await api.post("/auth/logout")
-
-    // redirect after logout
-    window.location.href = "/login"
-  } catch (error) {
-    console.log("Logout error", error)
+  const handleLogout = async () => {
+    try {
+      await api.post("/logout")
+      router.push("/login") //  better than window.location
+    } catch (error) {
+      console.log("Logout error", error)
+    }
   }
-}
 
   return (
     <SidebarProvider>
       <AppSidebar />
+
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b border-gray-100 bg-[#325E52]">
-          <div className="flex items-center gap-2 px-3 text-white justify-between w-full">
-            <div className="flex gap-2 items-center">
+        {/* HEADER */}
+        <header className="flex h-16 items-center border-b border-gray-100 bg-[#325E52]">
+          <div className="flex items-center justify-between w-full px-3 text-white">
+
+            {/* LEFT SIDE */}
+            <div className="flex items-center gap-3">
               <SidebarTrigger />
+
               <Separator
                 orientation="vertical"
-                className="mr-2 h-4 bg-gray-100 text-gray-100"
+                className="h-4 bg-gray-200"
               />
 
-              <div className="frontend__links text-sm flex gap-4 text-gray-50">
+              <div className="flex gap-4 text-sm">
                 <Link href="/">Home</Link>
-                <Link href="/about-us">About Us</Link>
-                <Link href="/blogs">Blogs</Link>
-                <Link href="/cntact-us">Contact Us</Link>
-                <Link href="/">Donate</Link>
+                <Link href="/about">About Us</Link>
+                <Link href="/blog">Blogs</Link>
+                <Link href="/contact">Contact Us</Link> {/* ✅ fixed */}
+                <Link href="/donate">Donate</Link>
               </div>
             </div>
 
-            <div className="">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Avatar>
-                    <AvatarImage
-                      src="/images/gallery/user-profile.jpg"
-                      alt="@shadcn"
-                    />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="bg-white border-gray-100 w-[15rem] p-3 space-y-2">
-                  <DropdownMenuItem>
-                    <UserIcon />
+            {/* RIGHT SIDE */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Avatar className="cursor-pointer">
+                  <AvatarImage
+                    src="/images/gallery/user-profile.jpg"
+                    alt="User"
+                  />
+                  <AvatarFallback>U</AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent className="bg-white border-gray-100 w-[15rem] p-2">
+                
+                <DropdownMenuItem asChild>
+                  <Link href="/member/profile" className="flex items-center gap-2">
+                    <UserIcon size={16} />
                     Profile
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <CreditCardIcon />
-                    Billing
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <SettingsIcon />
-                    Settings
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem variant="destructive">
-                    <LogOutIcon />
-                     <button onClick={handleLogout}>Logout</button>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+                  </Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuSeparator />
+
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 text-red-500 cursor-pointer"
+                >
+                  <LogOutIcon size={16} />
+                  Logout
+                </DropdownMenuItem>
+
+              </DropdownMenuContent>
+            </DropdownMenu>
+
           </div>
         </header>
+
+        {/* MAIN */}
         <main className="p-5">{children}</main>
       </SidebarInset>
     </SidebarProvider>
-  );
-};
+  )
+}
 
-export default MemberDashboardLayout;
+export default MemberDashboardLayout

@@ -85,8 +85,8 @@ const Generate = () => {
 
     setIsLoading(true);
     try {
-      await api.post("/certificate/generate", { memberId });
-      toast.success("Certificate generated successfully");
+     const res =  await api.post("/certificate/generate", { memberId });
+      toast.success(res.data.message|| "Certificate generated successfully");
       router.push("/admin/member-certificate");
     } catch (error: any) {
       const message = error.response?.data?.message || "Something went wrong";

@@ -16,6 +16,7 @@ import {
   UserStar,
   Video,
   Spotlight,
+  Contact,
 } from "lucide-react";
 
 const adminMainRoutes = [
@@ -61,12 +62,6 @@ const adminAppRoutes = [
     icon: User,
     label: "Users",
     href: "/admin/users",
-  },
-  {
-    id: 7,
-    icon: ChartNoAxesCombined,
-    label: "Analytics",
-    href: "/admin/analytics",
   },
   {
     id: 8,
@@ -133,6 +128,12 @@ const adminHomeRoutes = [
         label: "Videos",
         href: "/admin/videos",
       },
+      {
+        id:17,
+        icon:Contact,
+        label:"Contact",
+        href:"/admin/contact"
+      }
     ],
   },
 ];

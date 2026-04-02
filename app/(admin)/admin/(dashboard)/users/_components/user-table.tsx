@@ -314,6 +314,21 @@ export function UserTable({ data }: UserTableProps) {
           onChange={(e) => table.getColumn("fullName")?.setFilterValue(e.target.value)}
           className="max-w-xs h-9 text-sm border-gray-200 rounded-lg focus-visible:ring-1 focus-visible:ring-[var(--color-primary)]"
         />
+
+        {/* Status Filter */}
+        <select
+          value={(table.getColumn("role")?.getFilterValue() as string) ?? ""}
+          onChange={(e) =>
+            table.getColumn("role")?.setFilterValue(e.target.value || undefined)
+          }
+          className="border border-gray-300 rounded-md px-3 py-2 text-sm cursor-pointer"
+        >
+          <option value="">All</option>
+          <option value="admin">Admin</option>
+          <option value="member">Member</option>
+          <option value="donor">Donor</option>
+        </select>
+
       </div>
 
       <div className="rounded-xl overflow-hidden border border-gray-100">
@@ -408,6 +423,6 @@ export function UserTable({ data }: UserTableProps) {
         title="Delete User?"
         description="This user will be permanently deleted. This action cannot be undone."
       />
-    </div>
+    </div >
   );
 }

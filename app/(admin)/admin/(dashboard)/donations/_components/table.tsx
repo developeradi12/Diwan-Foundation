@@ -206,7 +206,7 @@ const donorColumns = (
       ),
       cell: ({ row }) => (
         <div className="flex gap-2">
-          <button
+          {/* <button
             onClick={() => onView(row.original)}
             className="p-2 rounded-lg border hover:scale-105 cursor-pointer transition"
             style={{
@@ -216,7 +216,7 @@ const donorColumns = (
             }}
           >
             <Eye size={14} />
-          </button>
+          </button> */}
 
           <button
             onClick={() => onDelete(row.original)}
@@ -282,16 +282,30 @@ export const DonorTable = ({ data }: { data: DonationDTO[] }) => {
 
   return (
     <div className="space-y-4">
-
-      {/*  Search */}
-      <Input
-        placeholder="Search donor..."
-        value={(table.getColumn("userName")?.getFilterValue() as string) ?? ""}
-        onChange={(e) =>
-          table.getColumn("userName")?.setFilterValue(e.target.value)
-        }
-        className="max-w-sm"
-      />
+      <div className="flex gap-3 items-center">
+        {/*  Search */}
+        <Input
+          placeholder="Search donor..."
+          value={(table.getColumn("userName")?.getFilterValue() as string) ?? ""}
+          onChange={(e) =>
+            table.getColumn("userName")?.setFilterValue(e.target.value)
+          }
+          className="max-w-sm"
+        />
+        {/* Status Filter */}
+        <select
+          value={(table.getColumn("paymentStatus")?.getFilterValue() as string) ?? ""}
+          onChange={(e) =>
+            table.getColumn("paymentStatus")?.setFilterValue(e.target.value || undefined)
+          }
+          className="border border-gray-300 rounded-md px-3 py-2 text-sm cursor-pointer"
+        >
+          <option value="">All</option>
+          <option value="success">Success</option>
+          <option value="pending">Pending</option>
+          <option value="failed">Failed</option>
+        </select>
+      </div>
 
       {/* Table */}
       <div className="rounded-xl overflow-hidden border border-gray-200/60 backdrop-blur-sm">
@@ -369,6 +383,6 @@ export const DonorTable = ({ data }: { data: DonationDTO[] }) => {
         </Button>
       </div>
 
-    </div>
+    </div >
   );
 };

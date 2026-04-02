@@ -12,9 +12,9 @@ export interface ICertificate extends Document {
 
 const CertificateSchema = new Schema<ICertificate>(
   {
-    memberId: { type: String, required: true },
+    memberId: { type: String, required: true, unique: true },
     memberName: { type: String, required: true },
-    certificateNo: { type: String, required: true },
+    certificateNo: { type: String, required: true ,unique:true},
     issueDate: { type: Date, default: Date.now },
     fileUrl: { type: String, required: true },
   },
@@ -22,4 +22,4 @@ const CertificateSchema = new Schema<ICertificate>(
 );
 
 export default mongoose.models.Certificate ||
-mongoose.model<ICertificate>("Certificate", CertificateSchema);
+  mongoose.model<ICertificate>("Certificate", CertificateSchema);
