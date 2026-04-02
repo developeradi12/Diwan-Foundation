@@ -137,6 +137,17 @@ const AdminLogin = () => {
                     </Field>
                   )}
                 />
+
+                {/* 👇 ADD HERE */}
+                <div className="w-full flex justify-end mt-2">
+                  <button
+                    type="button"
+                    onClick={() => router.push("/forget")}
+                    className="text-sm text-blue-600 hover:underline cursor-pointer"
+                  >
+                    Forgot Password?
+                  </button>
+                </div>
               </FieldGroup>
             </form>
           </CardContent>
