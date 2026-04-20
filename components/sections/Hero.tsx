@@ -9,6 +9,7 @@ import { Autoplay, Navigation, Pagination } from "swiper/modules"
 
 export default function Hero() {
   const [banners, setBanners] = useState<Banner[]>([])
+  const [isMobile, setIsMobile] = useState(false)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -28,7 +29,17 @@ export default function Hero() {
   }, [])
 
   //  Detect mobile (client-side = accurate)
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 640
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640)
+    }
+
+    handleResize() // run on mount
+
+    window.addEventListener("resize", handleResize)
+
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
 
   //  Filter banners
   const filteredBanners = banners.filter((b) =>
@@ -36,7 +47,7 @@ export default function Hero() {
   )
 
   /* Loading Skeleton */
-  if (loading) {
+  if (loading || isMobile === null) {
     return (
       <section className="w-full h-[500px] sm:h-[300px] md:h-[380px] lg:h-[420px] xl:h-[520px]">
         <Skeleton className="w-full h-full rounded-none" />
