@@ -94,7 +94,6 @@ export async function POST(req: NextRequest) {
       email,
       role,
       phone,
-      amount: role === "donor" ? amount : undefined,
       password: hashedPassword,
     });
 
@@ -142,9 +141,11 @@ export async function POST(req: NextRequest) {
     if (role === "donor") {
       const donation = await Donation.create({
         user: newUser._id,
-        amount: newUser.amount,
-        paymentStatus: "success",
-        cashfreeOrderId: "add by admin",
+        fullName: newUser.fullName,
+        email: newUser.email,
+        phone: newUser.phone,
+         amount: amount ,
+        screenshot: "add by admin",
         paidAt: new Date(),
       });
     }

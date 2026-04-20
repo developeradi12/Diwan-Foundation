@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Pencil, X, CheckCircle, AlertCircle } from "lucide-react"
-
+import { Eye, EyeOff } from "lucide-react"
 // ─── Types ─────────────────────────────────────────────────────────────────
 interface MembershipPlan {
   _id: string
@@ -47,11 +47,6 @@ function formatDate(d?: string | null) {
   })
 }
 
-function isMembershipActive(endDate?: string) {
-  if (!endDate) return false
-  return new Date(endDate) > new Date()
-}
-
 // ─── Section heading ───────────────────────────────────────────────────────
 function SectionTitle({ title }: { title: string }) {
   return (
@@ -79,27 +74,43 @@ function Row({
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   placeholder?: string
 }) {
+  const [showPassword, setShowPassword] = useState(false)
+  const isPassword = type === "password"
+
   return (
     <div className="flex items-center gap-4 px-6 py-3 border-b border-gray-50 last:border-0">
       <span className="w-36 shrink-0 text-sm text-gray-400">{label}</span>
+
       {editing ? (
-        <input
-          type={type}
-          name={name}
-          value={value}
-          onChange={onChange}
-          placeholder={placeholder || `Enter ${label.toLowerCase()}`}
-          className="flex-1 text-sm text-gray-800 border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
-        />
+        <div className="flex-1 relative">
+          <input
+            type={isPassword ? (showPassword ? "text" : "password") : type}
+            name={name}
+            value={value}
+            onChange={onChange}
+            placeholder={placeholder || `Enter ${label.toLowerCase()}`}
+            className="w-full text-sm text-gray-800 border border-gray-200 rounded-lg px-3 py-1.5 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+          />
+
+          {/* 👁️ Eye Toggle */}
+          {isPassword && (
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500"
+            >
+              {showPassword ? <Eye size={16} /> :<EyeOff size={16} />} 
+            </button>
+          )}
+        </div>
       ) : (
         <span className="flex-1 text-sm text-gray-800">
-          {type === "password" ? "••••••••" : value || "—"}
+          {isPassword ? "••••••••" : value || "—"}
         </span>
       )}
     </div>
   )
 }
-
 // ─── Main Page ─────────────────────────────────────────────────────────────
 export default function MemberProfilePage() {
   const [profile, setProfile] = useState<UserProfile | null>(null)

@@ -2,7 +2,7 @@
 
 import Header from "@/app/(admin)/_components/header"
 import { useEffect, useState } from "react"
-import { Pencil } from "lucide-react"
+import { Eye, EyeOff, Pencil } from "lucide-react"
 import api from "@/lib/axios"
 import { toast } from "sonner"
 
@@ -203,18 +203,34 @@ function Field({
   isEditing,
   type = "text",
 }: any) {
+  const [showPassword, setShowPassword] = useState(false)
+
+  const isPassword = type === "password"
   return (
     <div className="flex items-center px-6 py-4 gap-4">
       <span className="w-32 text-sm text-gray-500">{label}</span>
 
       {isEditing ? (
-        <input
-          type={type}
-          name={name}
-          value={value}
-          onChange={onChange}
-          className="flex-1 border border-gray-400 rounded-lg px-3 py-1.5"
-        />
+        <div className="flex-1 relative">
+          <input
+            type={isPassword ? (showPassword ? "text" : "password") : type}
+            name={name}
+            value={value}
+            onChange={onChange}
+            className="w-full border border-gray-400 rounded-lg px-3 py-1.5 pr-10"
+          />
+
+          {/* 👁️ Eye Toggle */}
+          {isPassword && (
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500"
+            >
+              {showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
+            </button>
+          )}
+        </div>
       ) : (
         <span className="flex-1 text-sm">{value || "—"}</span>
       )}

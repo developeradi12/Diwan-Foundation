@@ -29,10 +29,6 @@ export default async function Page() {
     user: userId,
   }).sort({ createdAt: -1 })
 
-  //stats
-  const successfulDonations = donations.filter(
-    (d) => d.paymentStatus === "success"
-  )
 
   // ── Calculate total amount ──
   const totalDonation = donations.reduce(
@@ -91,9 +87,7 @@ export default async function Page() {
             <thead>
               <tr className="text-gray-400 border-b">
                 <th className="py-2">Amount</th>
-                <th className="py-2">Status</th>
                 <th className="py-2">Date</th>
-                <th className="py-2">Order ID</th>
               </tr>
             </thead>
 
@@ -107,7 +101,7 @@ export default async function Page() {
                   </td>
 
                   {/* Status */}
-                  <td className="py-2">
+                  {/* <td className="py-2">
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium ${d.paymentStatus === "success"
                         ? "bg-green-100 text-green-600"
@@ -118,7 +112,7 @@ export default async function Page() {
                     >
                       {d.paymentStatus}
                     </span>
-                  </td>
+                  </td> */}
 
                   {/* Date */}
                   <td className="py-2 text-gray-500">
@@ -126,9 +120,9 @@ export default async function Page() {
                   </td>
 
                   {/* Order ID */}
-                  <td className="py-2 text-gray-400 text-xs">
+                  {/* <td className="py-2 text-gray-400 text-xs">
                     {d.cashfreeOrderId || "—"}
-                  </td>
+                  </td> */}
 
                 </tr>
               ))}

@@ -13,6 +13,7 @@ export function Footer() {
     { label: "Blog", href: "/blog" },
     { label: "Contact", href: "/contact" },
     { label: "Donate", href: "/donate" },
+    { label: "Login", href: "/login" }
   ]
 
   const contactInfo = {
