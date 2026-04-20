@@ -6,12 +6,11 @@ export interface IDonation extends Document {
 
   // ── Payment info ─────────────────────────────────────────────────────────
   amount: number;
-  paymentStatus: "pending" | "success" | "failed";
-
-  // ── Razorpay fields (filled after successful payment) ────────────────────
-  cashfreeOrderId: String
+  fullName: string;
+  email: string;
+  phone: string;
   paidAt?: Date | null;                   // timestamp of successful payment
-
+  screenshot: string | null;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -24,16 +23,13 @@ const DonationSchema = new Schema<IDonation>(
       required: true,
     },
 
+    fullName: { type: String, required: true },
+    email: { type: String, required: true },
+    phone: { type: String, required: true },
+
     amount: { type: Number, required: true },
-    paymentStatus: {
-      type: String,
-      enum: ["pending", "success", "failed"],
-      default: "pending",
-    },
-    cashfreeOrderId: {
-      type: String,
-    },
     paidAt: { type: Date, default: null },
+    screenshot: { type: String, default: null },
   },
   { timestamps: true }
 );

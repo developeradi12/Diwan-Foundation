@@ -13,12 +13,14 @@ import BlogSection from "@/components/sections/blogs";
 import Image from "next/image";
 import ShortsSlider from "@/components/sections/videoSection";
 import OurMembers from "@/components/sections/our-member";
+import Crowdfunding from "@/components/sections/crowdfunding";
 
 export default function HomePage() {
   return (
     <>
       <Navbar />
       <Hero />
+      <Crowdfunding/>
       <div className="">
         <ScrollSection>
           <AboutSection />

@@ -1,31 +1,38 @@
 "use client"
-
-import { useEffect, useState } from "react"
 import Image from "next/image"
-import api from "@/lib/axios"
-
-interface Member {
-  _id: string
-  name: string
-  designation: string
-  image: string
-}
 
 export default function OurMembers() {
-  const [members, setMembers] = useState<Member[]>([])
 
-  useEffect(() => {
-    const fetchMembers = async () => {
-      try {
-        const res = await api.get("/admin/our-member")
-        setMembers(res.data.members || [])
-      } catch (err) {
-        console.error("Error fetching members ", err)
-      }
-    }
+  // useEffect(() => {
+  //   const fetchMembers = async () => {
+  //     try {
+  //       const res = await api.get("/admin/our-member")
+  //       setMembers(res.data.members || [])
+  //     } catch (err) {
+  //       console.error("Error fetching members ", err)
+  //     }
+  //   }
 
-    fetchMembers()
-  }, [])
+  //   fetchMembers()
+  // }, [])
+
+  const team = [
+    {
+      name: "A. B. Fakir",
+      role: "Managing Director",
+      image: "/images/gallery/managin-director.png"
+    },
+    {
+      name: "Ayubsha Diwan",
+      role: "Director",
+      image: "/images/gallery/director.png"
+    },
+    {
+      name: "Usmangani Fakir",
+      role: "Director",
+      image: "/images/gallery/director-2.png"
+    },
+  ];
 
   return (
     <div className="py-14 text-center bg-(--color-surface-alt)">
@@ -35,9 +42,9 @@ export default function OurMembers() {
 
       <div className="container mx-auto grid md:grid-cols-3 gap-10">
 
-        {members.map((member) => (
+        {team.map((member, index) => (
           <div
-            key={member._id}
+            key={index}
             className="flex flex-col items-center border-gray-200 border py-16 rounded-lg bg-white"
           >
             {/* Image */}
@@ -46,6 +53,7 @@ export default function OurMembers() {
                 src={member.image}
                 alt={member.name}
                 fill
+                sizes="160px"
                 className="object-cover"
               />
             </div>
@@ -57,7 +65,7 @@ export default function OurMembers() {
 
             {/* Designation */}
             <p className="text-gray-500">
-              {member.designation}
+              {member.role}
             </p>
           </div>
         ))}

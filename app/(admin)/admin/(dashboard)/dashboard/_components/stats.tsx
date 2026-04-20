@@ -66,7 +66,7 @@ export default function DashboardStats() {
       icon: Boxes,
       bg: "bg-green-50",
       iconBg: "bg-green-100 text-green-400",
-      link: "/admin/payments",
+      link: "/admin/donations",
     },
   ];
 

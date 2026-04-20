@@ -17,23 +17,11 @@ export const donationSchema = z.object({
     .string()
     .min(1, "Amount is required")
     .refine((val) => Number(val) >= 1, "Amount should not be less than 1 rupyee"),
+
+  screenshot: z
+    .any()
+    .refine((file) => file instanceof File, "Screenshot is required").optional(),
 })
 
 export type DonationFormValues = z.infer<typeof donationSchema>
 
-// export type Donor = {
-//   _id: string
-//   userId: {                    // ✅ populated object
-//     _id: string
-//     fullName: string
-//     email?: string
-//     phone?: string
-//   }|null
-//   amount: string
-//   message?: string
-//   screenshotUrl?: string
-//   transactionId: string
-//   donatedAt?: string         // ← required for date column
-//   createdAt?: string
-//   updatedAt?: string
-// }

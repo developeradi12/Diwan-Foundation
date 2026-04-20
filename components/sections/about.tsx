@@ -10,7 +10,7 @@ export default function AboutSection() {
   return (
     <section className="py-14 md:py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
-        {/* LEFT SIDE IMAGES */}
+
         {/* LEFT SIDE IMAGES */}
         <div className="relative grid grid-cols-2 gap-3 sm:gap-4">
           {/* Left Column: Image 1 */}

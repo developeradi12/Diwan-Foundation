@@ -101,7 +101,7 @@ export default function Navbar() {
             ))}
 
             {/* Mobile Pages Dropdown */}
-            <button
+            {/* <button
               onClick={() => setPagesOpen(!pagesOpen)}
               className="flex items-center justify-between"
             >
@@ -110,7 +110,7 @@ export default function Navbar() {
                 size={18}
                 className={`transition-transform ${pagesOpen ? "rotate-180" : ""}`}
               />
-            </button>
+            </button> */}
 
             {/* {pagesOpen && (
               <div className="flex flex-col ml-4 gap-2 text-sm">

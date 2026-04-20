@@ -35,6 +35,9 @@ import {
 import { DonationDTO } from "@/types/donation";
 import api from "@/lib/axios";
 import { toast } from "sonner";
+import Image from "next/image";
+
+
 
 // ─────────────────────────────────────────────
 // Columns
@@ -42,7 +45,8 @@ import { toast } from "sonner";
 
 const donorColumns = (
   onView: (donor: DonationDTO) => void,
-  onDelete: (donor: DonationDTO) => void
+  onDelete: (donor: DonationDTO) => void,
+  onPreview: (url: string) => void
 ): ColumnDef<DonationDTO>[] => [
     {
       accessorKey: "user.Name",
@@ -121,53 +125,36 @@ const donorColumns = (
         </span>
       ),
     },
-
     {
-      accessorKey: "paymentStatus",
+      accessorKey: "screenshot",
       header: () => (
         <span
           className="text-xs font-semibold uppercase tracking-wide"
           style={{ color: "var(--color-primary)" }}
         >
-          Status
+          ScreenShot
         </span>
       ),
       cell: ({ row }) => {
-        const status = row.original.paymentStatus;
+        const screenshotUrl = row.original.screenshot;
 
-        const styles = {
-          success: "bg-green-50 text-green-600",
-          pending: "bg-yellow-50 text-yellow-600",
-          failed: "bg-red-50 text-red-600",
-        };
-
-        return (
-          <span
-            className={`px-2 py-1 rounded text-xs font-medium ${styles[status]}`}
+        if (!screenshotUrl) {
+          return <span className="text-gray-400 text-xs">—</span>;
+        } return (
+          <button
+            onClick={() => onPreview(screenshotUrl)}
+            className="p-2 rounded-lg border hover:scale-105 transition cursor-pointer"
+            style={{
+              borderColor:
+                "color-mix(in oklch, var(--color-primary) 20%, white)",
+              color: "var(--color-primary)",
+            }}
           >
-            {status}
-          </span>
+            <Eye size={14} />
+          </button>
         );
       },
     },
-
-    {
-      accessorKey: "cashfreeOrderId",
-      header: () => (
-        <span
-          className="text-xs font-semibold uppercase tracking-wide"
-          style={{ color: "var(--color-primary)" }}
-        >
-          Payment ID
-        </span>
-      ),
-      cell: ({ row }) => (
-        <span className="text-xs font-mono bg-gray-50 px-2 py-1 rounded-lg text-gray-500">
-          {row.original.cashfreeOrderId ?? "—"}
-        </span>
-      ),
-    },
-
     {
       id: "date",
       header: () => (
@@ -240,6 +227,8 @@ const donorColumns = (
 
 export const DonorTable = ({ data }: { data: DonationDTO[] }) => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [previewImage, setPreviewImage] = React.useState<string | null>(null);
+
   const [columnFilters, setColumnFilters] =
     React.useState<ColumnFiltersState>([]);
   const [tableData, setTableData] = React.useState<DonationDTO[]>(data);
@@ -270,7 +259,7 @@ export const DonorTable = ({ data }: { data: DonationDTO[] }) => {
 
   const table = useReactTable({
     data: tableData,
-    columns: donorColumns(handleView, handleDelete),
+    columns: donorColumns(handleView, handleDelete, setPreviewImage),
     state: { sorting, columnFilters },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -293,7 +282,7 @@ export const DonorTable = ({ data }: { data: DonationDTO[] }) => {
           className="max-w-sm"
         />
         {/* Status Filter */}
-        <select
+        {/* <select
           value={(table.getColumn("paymentStatus")?.getFilterValue() as string) ?? ""}
           onChange={(e) =>
             table.getColumn("paymentStatus")?.setFilterValue(e.target.value || undefined)
@@ -304,7 +293,7 @@ export const DonorTable = ({ data }: { data: DonationDTO[] }) => {
           <option value="success">Success</option>
           <option value="pending">Pending</option>
           <option value="failed">Failed</option>
-        </select>
+        </select> */}
       </div>
 
       {/* Table */}
@@ -382,7 +371,42 @@ export const DonorTable = ({ data }: { data: DonationDTO[] }) => {
           Next
         </Button>
       </div>
+      {
+        previewImage && (
+          <div
+            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+            onClick={() => setPreviewImage(null)}
+          >
+            {/* Container */}
+            <div
+              className="relative w-full max-w-4xl h-[70vh] sm:h-[80vh] bg-transparent"
+              onClick={(e) => e.stopPropagation()} // prevent close on image click
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setPreviewImage(null)}
+                className="absolute -top-10 right-0 text-white cursor-pointer text-sm bg-black/60 px-3 py-1 rounded-md hover:bg-black/80"
+              >
+                ✕ Close
+              </button>
 
+              {/* Image */}
+              <div className="relative w-full h-full">
+                <Image
+                  src={previewImage}
+                  alt="Screenshot"
+                  fill
+                  className="object-contain rounded-xl shadow-2xl"
+                  sizes="(max-width: 640px) 100vw, 800px"
+                />
+              </div>
+            </div>
+          </div>
+        )
+      }
     </div >
+
+
   );
 };
+

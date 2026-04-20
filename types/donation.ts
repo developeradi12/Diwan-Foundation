@@ -7,22 +7,15 @@ export interface DonorUser {
   phone: string;
 }
 
-export type PaymentStatus = "pending" | "success" | "failed";
-
 export interface DonationDTO {
   _id: string;
   user: DonorUser | null;
   amount: number;
-  paymentStatus: PaymentStatus;
-  cashfreeOrderId?: string;
+  screenshot?: string;
   paidAt: Date | null;
   createdAt: Date;
 }
 
 export interface DonationStats {
   totalRaised: number;
-  successCount: number;
-  pendingCount: number;
-  failedCount: number;
-  pendingAmount: number;
 }

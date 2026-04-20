@@ -110,12 +110,12 @@ const adminHomeRoutes = [
         label: "Testimonials",
         href: "/admin/testimonials",
       },
-      {
-        id: 14,
-        icon: Users,
-        label: "Our Members",
-        href: "/admin/our-members",
-      },
+      // {
+      //   id: 14,
+      //   icon: Users,
+      //   label: "Our Members",
+      //   href: "/admin/our-members",
+      // },
       {
         id: 15,
         icon: ImagePlus,

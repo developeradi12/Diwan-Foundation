@@ -33,8 +33,6 @@ const Header = ({ backlink, pageName, currentPage }: BreadcrumbProps) => {
   const handleLogout = async () => {
     try {
       await api.post("/admin/logout")
-
-      // redirect after logout
       window.location.href = "/login"
     } catch (error) {
       console.log("Logout error", error)
@@ -42,16 +40,21 @@ const Header = ({ backlink, pageName, currentPage }: BreadcrumbProps) => {
   }
 
   return (
-    <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 justify-between px-4 border-b`">
-      <div className="flex items-center gap-2">
+    <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-3 sm:px-4 py-2 sm:h-16 ">
+
+      {/* LEFT */}
+      <div className="flex items-center gap-2 flex-wrap">
         <SidebarTrigger className="-ml-1 text-(--color-text)" />
+
         <Separator
           orientation="vertical"
-          className="mr-2 data-[orientation=vertical]:h-4"
+          className="hidden sm:block mr-2 h-4"
         />
+
+        {/* Breadcrumb */}
         <Breadcrumb>
           <BreadcrumbList>
-            <BreadcrumbItem className="hidden md:block">
+            <BreadcrumbItem className="hidden sm:block">
               <BreadcrumbLink
                 href={backlink}
                 className="text-(--color-text-muted) hover:text-(--color-primary)"
@@ -59,9 +62,11 @@ const Header = ({ backlink, pageName, currentPage }: BreadcrumbProps) => {
                 {pageName}
               </BreadcrumbLink>
             </BreadcrumbItem>
-            <BreadcrumbSeparator className="hidden md:block" />
+
+            <BreadcrumbSeparator className="hidden sm:block" />
+
             <BreadcrumbItem>
-              <BreadcrumbPage className="text-(--color-primary) font-medium">
+              <BreadcrumbPage className="text-(--color-primary) font-medium text-sm sm:text-base">
                 {currentPage}
               </BreadcrumbPage>
             </BreadcrumbItem>
@@ -69,43 +74,51 @@ const Header = ({ backlink, pageName, currentPage }: BreadcrumbProps) => {
         </Breadcrumb>
       </div>
 
-      <div className="flex gap-3 items-center">
+      {/* RIGHT */}
+      <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+
+        {/* Donations Button */}
         <Link href="/admin/donations">
-          <Button className="bg-(--color-primary) cursor-pointe text-(--color-text-inverse) hover:opacity-90 cursor-pointer">
-            <Spotlight /> Donations
+          <Button className="bg-(--color-primary) text-(--color-text-inverse) hover:opacity-90 flex items-center gap-1 px-3 py-2 text-xs sm:text-sm">
+            <Spotlight size={16} />
+            <span className="hidden sm:inline">Donations</span>
           </Button>
         </Link>
-        <Link href="/blogs">
-          <Button className="bg-(--color-success) cursor-pointer text-white hover:opacity-90 cursor-pointer">
-            <SquarePenIcon /> Blogs
+
+        {/* Blogs Button */}
+        <Link href="/admin/blogs">
+          <Button className="bg-(--color-success) text-white hover:opacity-90 flex items-center gap-1 px-3 py-2 text-xs sm:text-sm">
+            <SquarePenIcon size={16} />
+            <span className="hidden sm:inline">Blogs</span>
           </Button>
         </Link>
+
+        {/* Profile Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              className="rounded-full w-10 h-10 cursor-pointer border-(--color-border)"
+              className="rounded-full w-9 h-9 sm:w-10 sm:h-10 border-(--color-border)"
             >
-              <User />
+              <User size={16} />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="mr-3 bg-white w-[200px] text-md border-0">
-            <DropdownMenuLabel className="text-md font-medium border-0">
-              <Link href="/admin/my-account" className="w-full block">
+
+          <DropdownMenuContent className="mr-2 bg-white w-[180px] sm:w-[200px] border-0">
+            <DropdownMenuLabel>
+              <Link href="/admin/my-account" className="block w-full">
                 My Account
               </Link>
             </DropdownMenuLabel>
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem
-              className="text-md cursor-pointer"
-              onClick={handleLogout}
-            >
+            <DropdownMenuItem onClick={handleLogout}>
               Logout
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
       </div>
     </header>
   );

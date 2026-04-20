@@ -6,7 +6,7 @@ import Donation from "@/models/Donation";
 import connectToDatabase from "@/lib/mongodb";
 import { DonorTable } from "./_components/table";
 import "@/models/User";
-import { DonationDTO, DonationStats, PaymentStatus } from "@/types/donation";
+import { DonationDTO, DonationStats } from "@/types/donation";
 import { StatCard } from "@/app/(admin)/_components/stats-card";
 
 // ─── Data Fetcher ────────────────────────────────────────────────────────────
@@ -33,10 +33,8 @@ async function getDonors(): Promise<DonationDTO[]> {
         phone: d.user.phone,
       }
       : null,
-
+    screenshot:d.screenshot,
     amount: d.amount,
-    paymentStatus: d.paymentStatus as PaymentStatus,
-    cashfreeOrderId: d.cashfreeOrderId ?? null,
     paidAt: d.paidAt ?? null,
     createdAt: d.createdAt,
   }));
@@ -45,15 +43,8 @@ async function getDonors(): Promise<DonationDTO[]> {
 // ─── Stats Calculator ────────────────────────────────────────────────────────
 
 function computeStats(donors: DonationDTO[]): DonationStats {
-  const successful = donors.filter((d) => d.paymentStatus === "success");
-  const pending = donors.filter((d) => d.paymentStatus === "pending");
-
   return {
-    totalRaised: successful.reduce((sum, d) => sum + (d.amount ?? 0), 0),
-    successCount: successful.length,
-    pendingCount: donors.filter((d) => d.paymentStatus === "pending").length,
-    failedCount: donors.filter((d) => d.paymentStatus === "failed").length,
-    pendingAmount: pending.reduce((sum, d) => sum + (d.amount ?? 0), 0),
+    totalRaised: donors?.reduce((sum, d) => sum + (d.amount || 0), 0) || 0
   };
 }
 
@@ -61,7 +52,7 @@ function computeStats(donors: DonationDTO[]): DonationStats {
 
 export default async function DonorsPage() {
   const donors = await getDonors();
-  const { totalRaised, successCount, pendingCount, failedCount, pendingAmount } =
+  const { totalRaised} =
     computeStats(donors);
 
   return (
@@ -88,26 +79,26 @@ export default async function DonorsPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-          <StatCard
+          {/* <StatCard
             icon={<Heart size={20} />}
             label="Pending Amount"
             value={`₹${pendingAmount.toLocaleString("en-IN")}`}
-          />
+          /> */}
           <StatCard
             icon={<TrendingUp size={20} />}
             label="Total Raised"
             value={`₹${totalRaised.toLocaleString("en-IN")}`}
           />
-          <StatCard
+          {/* <StatCard
             icon={<CheckCircle size={20} />}
             label="Success"
             value={successCount}
-          />
-          <StatCard
+          /> */}
+          {/* <StatCard
             icon={<Clock size={20} />}
             label="Pending"
             value={pendingCount}
-          />
+          /> */}
         </div>
 
         {/* Table */}
